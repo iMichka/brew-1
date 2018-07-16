@@ -392,6 +392,11 @@ update-preinstall() {
 
   # If we've checked for updates, we don't need to check again.
   export HOMEBREW_AUTO_UPDATE_CHECKED="1"
+
+  # Needed for multiple unpack stategies
+  if ! [ -x "$(command -v unzip)" ]; then
+    brew install unzip
+  fi
 }
 
 if [[ -n "$HOMEBREW_BASH_COMMAND" ]]
