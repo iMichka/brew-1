@@ -92,7 +92,7 @@ class JarUnpackStrategy < UncompressedUnpackStrategy
     return false unless ZipUnpackStrategy.can_extract?(path: path, magic_number: magic_number)
 
     # Check further if the ZIP is a JAR/WAR.
-    Open3.popen3(Formula["unzip"].opt_bin/"unzip", "-l", path) do |stdin, stdout, stderr, wait_thr|
+    Open3.popen3(ENV["HOMEBREW_UNZIP"], "-l", path) do |stdin, stdout, stderr, wait_thr|
       stdin.close_write
       stderr.close_read
 
@@ -126,7 +126,7 @@ class ZipUnpackStrategy < UnpackStrategy
   private
 
   def extract_to_dir(unpack_dir, basename:)
-    safe_system Formula["unzip"].opt_bin/"unzip", "-qq", path, "-d", unpack_dir
+    safe_system ENV["HOMEBREW_UNZIP"], "-qq", path, "-d", unpack_dir
   end
 end
 

@@ -383,6 +383,12 @@ user account:
 EOS
   fi
 
+  # Needed for multiple unpack stategies
+  if [[ ! -x "$(command -v unzip)" ]]
+  then
+    brew install unzip
+  fi
+
   # we may want to use a Homebrew curl
   if [[ -n "$HOMEBREW_FORCE_BREWED_CURL" &&
       ! -x "$HOMEBREW_PREFIX/opt/curl/bin/curl" ]]

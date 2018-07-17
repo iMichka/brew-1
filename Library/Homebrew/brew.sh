@@ -106,6 +106,7 @@ then
 
   HOMEBREW_CACHE="${HOMEBREW_CACHE:-${HOME}/Library/Caches/Homebrew}"
   HOMEBREW_SYSTEM_TEMP="/private/tmp"
+  HOMEBREW_UNZIP="unzip"
 else
   HOMEBREW_PROCESSOR="$(uname -m)"
   HOMEBREW_PRODUCT="${HOMEBREW_SYSTEM}brew"
@@ -116,6 +117,14 @@ else
   CACHE_HOME="${XDG_CACHE_HOME:-${HOME}/.cache}"
   HOMEBREW_CACHE="${HOMEBREW_CACHE:-${CACHE_HOME}/Homebrew}"
   HOMEBREW_SYSTEM_TEMP="/tmp"
+
+  # Needed for unpack strategies
+  if [[ -x "$HOMEBREW_PREFIX/opt/unzip/bin/unzip" ]]
+  then
+    HOMEBREW_UNZIP="$HOMEBREW_PREFIX/opt/unzip/bin/unzip"
+  else
+    HOMEBREW_UNZIP="unzip"
+  fi
 fi
 
 HOMEBREW_TEMP="${HOMEBREW_TEMP:-${HOMEBREW_SYSTEM_TEMP}}"
@@ -137,6 +146,8 @@ then
 else
   HOMEBREW_GIT="git"
 fi
+
+echo $HOMEBREW_UNZIP
 
 HOMEBREW_USER_AGENT="$HOMEBREW_PRODUCT/$HOMEBREW_USER_AGENT_VERSION ($HOMEBREW_SYSTEM; $HOMEBREW_PROCESSOR $HOMEBREW_OS_USER_AGENT_VERSION)"
 HOMEBREW_CURL_VERSION="$("$HOMEBREW_CURL" --version 2>/dev/null | head -n1 | awk '{print $1"/"$2}')"
@@ -162,6 +173,7 @@ export HOMEBREW_OS_VERSION
 export HOMEBREW_MACOS_VERSION
 export HOMEBREW_USER_AGENT
 export HOMEBREW_USER_AGENT_CURL
+export HOMEBREW_UNZIP
 
 if [[ -n "$HOMEBREW_MACOS" && -x "/usr/bin/xcode-select" ]]
 then
@@ -392,11 +404,6 @@ update-preinstall() {
 
   # If we've checked for updates, we don't need to check again.
   export HOMEBREW_AUTO_UPDATE_CHECKED="1"
-
-  # Needed for multiple unpack stategies
-  if ! [ -x "$(command -v unzip)" ]; then
-    brew install unzip
-  fi
 }
 
 if [[ -n "$HOMEBREW_BASH_COMMAND" ]]
